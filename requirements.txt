@@ -1,0 +1,4 @@
+pillow
+typer
+python-barcode
+colorama

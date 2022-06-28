@@ -21,12 +21,12 @@ def multi(datafile: str, output = "."):
     
 
 @app.command()
-def single(data: str, output: str = "."):
-    genBarcode(data, output)
+def single(data: str, outputPath: str = "."):
+    genBarcode(data, outputPath)
     print(f"{Fore.CYAN}{data.replace(' ', '_')}.jpg{Fore.WHITE}")
 
 def genBarcode(data, outfolder):
-    code = barcode.Code39(data, writer=ImageWriter(), add_checksum=False)
+    code = barcode.Code128(data, writer=ImageWriter())
     path = os.path.join(outfolder, data.replace(" ", "_"))
     code.save(path)
 
