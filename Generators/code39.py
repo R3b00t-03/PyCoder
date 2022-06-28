@@ -1,25 +1,31 @@
 import typer
 import os
-
+from colorama import Fore
 import barcode
 from barcode.writer import ImageWriter
 
 app = typer.Typer()
 
 @app.command()
-def batch(inputF: str, output: str = "."):
-    with open(inputF, "r") as inf:
+def multi(datafile: str, output = "."):
+    with open(datafile, "r") as inf:
         lines = inf.readlines()
-    for line in lines:
-        genBarcode(line, output)
+    total = 0
+    print(f"Generating {Fore.GREEN}{len(lines)}{Fore.WHITE} Files!")
+    with typer.progressbar(lines) as progress:
+        for val in progress:
+            genBarcode(val.strip(), output)
+            total += 1
+    print(f"Generated {Fore.GREEN}{total}{Fore.WHITE} Files!")
+    print(f"Saved to {Fore.CYAN}{output}{Fore.WHITE}!")
+    
+
+@app.command()
+def single(data: str, outputPath: str = "."):
+    genBarcode(data, outputPath)
 
 def genBarcode(data, outfolder):
     code = barcode.Code39(data, writer=ImageWriter(), add_checksum=False)
     path = os.path.join(outfolder, data.replace(" ", "_"))
     code.save(path)
 
-@app.command()
-def single(data: str, outputPath: str = "."):
-    code = barcode.Code39(data, add_checksum=False, writer=ImageWriter())
-    path = os.path.join(outputPath, data.replace(" ", "_"))
-    code.save(path)
