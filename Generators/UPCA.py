@@ -22,11 +22,19 @@ def multi(datafile: str, output = "."):
 
 @app.command()
 def single(data: str, output: str = "."):
-    genBarcode(data, output)
-    print(f"{Fore.CYAN}{data.replace(' ', '_')}.jpg{Fore.WHITE}")
+    res = genBarcode(data, output)
+    if res == 1:
+        print(f"{Fore.RED}ERROR: Make shure your data is only numeric and 12 digits long!{Fore.WHITE}")        
+    else:
+        print(f"{Fore.CYAN}{data.replace(' ', '_')}.jpg{Fore.WHITE}")
 
 def genBarcode(data, outfolder):
-    code = barcode.Code128(data, writer=ImageWriter())
-    path = os.path.join(outfolder, data.replace(" ", "_"))
-    code.save(path)
+    if len(data) == 12 and data.isdigit():
+        code = barcode.UPCA(data, writer=ImageWriter())
+        path = os.path.join(outfolder, data.replace(" ", "_"))
+        code.save(path)
+        return 0
+    else: 
+        return 1
+    
 
