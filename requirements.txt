@@ -2,3 +2,5 @@ pillow
 typer
 python-barcode
 colorama
+pyinstaller
+pyinstallerui
